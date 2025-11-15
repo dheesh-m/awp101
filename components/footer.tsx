@@ -4,7 +4,7 @@ import Link from "next/link";
 const teamMembers = [
   { name: "Dheesh Medekar F-31", role: "Full Stack Developer" },
   { name: "Anushka Patil F-34", role: "UI/UX Designer" },
-  { name: "Renesh Sharma F-45", role: "Backend Engineer" }
+  { name: "Renesh Sharma F-45", role: "Backend Engineer" },
   { name: "Nikhil Kurkur F-27", role: "Backend Engineer" }
 ];
 
@@ -31,7 +31,7 @@ export function Footer() {
               </span>
             </div>
             <p className="text-sm text-white/60">
-              Your futuristic movie booking experience. Book tickets with style, powered by AI suggestions.
+              Your futuristic movie booking experience. Book tickets with style. .
             </p>
             <div className="flex gap-4">
               {socialLinks.map((social) => {
