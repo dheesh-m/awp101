@@ -2,9 +2,10 @@ import { Film, Github, Twitter, Mail } from "lucide-react";
 import Link from "next/link";
 
 const teamMembers = [
-  { name: "Developer 1", role: "Full Stack Developer" },
-  { name: "Developer 2", role: "UI/UX Designer" },
-  { name: "Developer 3", role: "Backend Engineer" }
+  { name: "Dheesh Medekar F-31", role: "Full Stack Developer" },
+  { name: "Anushka Patil F-34", role: "UI/UX Designer" },
+  { name: "Renesh Sharma F-45", role: "Backend Engineer" }
+  { name: "Nikhil Kurkur F-27", role: "Backend Engineer" }
 ];
 
 const socialLinks = [
