@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Wheelchair } from "lucide-react";
+import { Accessibility } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type SeatStatus = "available" | "selected" | "sold" | "accessible";
@@ -264,7 +264,7 @@ export function SeatMapGrid({ maxSelectable = 8, onSelectionChange }: SeatMapGri
                               )}
                             >
                               {isAccessible ? (
-                                <Wheelchair className="h-4 w-4" />
+                                <Accessibility className="h-4 w-4" />
                               ) : (
                                 seat.number
                               )}

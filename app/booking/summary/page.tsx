@@ -16,9 +16,9 @@ interface BookingSummaryPageProps {
 }
 
 export default async function BookingSummaryPage({ searchParams }: BookingSummaryPageProps) {
-  const movie: Movie | undefined =
-    (searchParams.movie && (await fetchMovieBySlug(searchParams.movie))) ??
-    (await fetchMovieBySlug("spectrum-eclipse"));
+  const movieSlug = searchParams.movie?.trim();
+  const requestedMovie = movieSlug ? await fetchMovieBySlug(movieSlug) : undefined;
+  const movie: Movie | undefined = requestedMovie ?? (await fetchMovieBySlug("spectrum-eclipse"));
 
   const seats = searchParams.seats?.split(",").filter(Boolean) ?? ["A1", "A2"];
   const defaultPrice = movie?.showtimes?.[0]?.times?.[0]?.price ?? 15;

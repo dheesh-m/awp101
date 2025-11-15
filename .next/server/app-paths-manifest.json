@@ -1,8 +1,4 @@
 {
   "/page": "app/page.js",
-  "/movies/[slug]/seats/page": "app/movies/[slug]/seats/page.js",
-  "/booking/page": "app/booking/page.js",
-  "/booking/summary/page": "app/booking/summary/page.js",
-  "/movies/[slug]/page": "app/movies/[slug]/page.js",
   "/api/suggestions/genre/route": "app/api/suggestions/genre/route.js"
 }

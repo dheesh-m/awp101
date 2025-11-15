@@ -33,14 +33,27 @@ export default function BookingPage() {
   const screenOptions = ["Dolby Atmos", "Inox", "IMAX", "IMAX 4D"];
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadMovies = async () => {
       const movieList = await fetchMovies();
+      if (!isMounted) return;
+
       setMovies(movieList);
-      if (movieList.length > 0 && !formData.movieTitle) {
-        setFormData((prev) => ({ ...prev, movieTitle: movieList[0].title }));
+
+      if (movieList.length > 0) {
+        setFormData((prev) => {
+          if (prev.movieTitle) return prev;
+          return { ...prev, movieTitle: movieList[0].title };
+        });
       }
     };
+
     loadMovies();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleInputChange = (field: string, value: string | number | string[]) => {
