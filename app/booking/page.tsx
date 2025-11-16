@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { BookingSeatMap } from "@/components/booking-seat-map";
 import { fetchMovies } from "@/lib/data-service";
-import { formatCurrency } from "@/lib/utils";
 import type { Movie } from "@/data/movies";
 
 export default function BookingPage() {
@@ -62,6 +61,31 @@ export default function BookingPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Client-side validation
+    if (
+      !formData.movieTitle ||
+      !formData.showDate ||
+      !formData.showTime ||
+      !formData.screen ||
+      !formData.seats ||
+      formData.seats.length === 0 ||
+      !formData.totalPrice ||
+      !formData.customerName ||
+      !formData.customerEmail ||
+      !formData.customerPhone
+    ) {
+      alert("Please fill in all required fields before submitting.");
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.customerEmail)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -71,19 +95,37 @@ export default function BookingPage() {
         body: JSON.stringify(formData)
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      const data = await response.json();
+
+      if (response.ok && data.success) {
         setShowSuccess(true);
+
+        const summaryParams = new URLSearchParams();
+        const matchedMovie = movies.find((movie) => movie.title === formData.movieTitle);
+
+        if (matchedMovie?.slug) summaryParams.set("movie", matchedMovie.slug);
+        if (formData.movieTitle) summaryParams.set("title", formData.movieTitle);
+        if (formData.showDate) summaryParams.set("date", formData.showDate);
+        if (formData.showTime) summaryParams.set("time", formData.showTime);
+        if (formData.screen) summaryParams.set("screen", formData.screen);
+        if (formData.seats.length > 0) summaryParams.set("seats", formData.seats.join(","));
+        if (formData.totalPrice > 0) summaryParams.set("total", formData.totalPrice.toString());
+
+        const redirectUrl = summaryParams.toString()
+          ? `/booking/success?${summaryParams.toString()}`
+          : "/booking/success";
+
         setTimeout(() => {
-          router.push(`/booking/summary?bookingId=${data.booking.id}`);
+          router.push(redirectUrl);
         }, 2000);
       } else {
-        alert("Booking failed. Please try again.");
+        const errorMessage = data?.error || "Booking failed. Please try again.";
+        alert(errorMessage);
+        setLoading(false);
       }
     } catch (error) {
       console.error("Booking error:", error);
-      alert("An error occurred. Please try again.");
-    } finally {
+      alert("An error occurred. Please check your connection and try again.");
       setLoading(false);
     }
   };
@@ -94,17 +136,24 @@ export default function BookingPage() {
       <AnimatePresence>
         {showSuccess && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="glass-panel rounded-2xl border border-green-400/50 bg-green-500/20 p-6"
+            initial={{ opacity: 0, scale: 0.9, y: -20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: -20 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="glass-panel rounded-2xl border-2 border-green-400/70 bg-green-500/30 p-8 shadow-lg shadow-green-500/20"
           >
             <div className="flex items-center gap-4">
-              <CheckCircle2 className="h-8 w-8 text-green-400" />
-              <div>
-                <h3 className="text-lg font-semibold text-white">Booking Successful!</h3>
-                <p className="text-sm text-white/70">
-                  Your tickets have been booked successfully. Redirecting to summary...
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+              >
+                <CheckCircle2 className="h-10 w-10 text-green-400" />
+              </motion.div>
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold text-white">Booking Successful! 🎉</h3>
+                <p className="mt-2 text-base text-white/90">
+                  Your tickets have been booked successfully. Redirecting to see all bookings...
                 </p>
               </div>
             </div>
